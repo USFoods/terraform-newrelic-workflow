@@ -10,7 +10,7 @@ resource "newrelic_notification_destination" "email_notification_destination" {
 }
 
 resource "newrelic_notification_channel" "email_notification_channel" {
-  account_id     = var.account_id
+  account_id     = coalesce(var.parent_id, var.account_id)
   name           = var.name
   type           = "EMAIL"
   destination_id = newrelic_notification_destination.email_notification_destination.id
