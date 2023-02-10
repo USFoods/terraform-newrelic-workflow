@@ -44,3 +44,8 @@ variable "policy_ids" {
   description = "List of policy ids to be include in the workflow issues filter"
   type        = list(string)
 }
+
+variable "enrichments" {
+    description = ""
+    type = map(string)
+}
