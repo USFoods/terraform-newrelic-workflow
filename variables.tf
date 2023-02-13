@@ -46,6 +46,6 @@ variable "policy_ids" {
 }
 
 variable "enrichments" {
-    description = ""
+    description = "The workflow's notification enrichments"
     type = map(string)
 }
