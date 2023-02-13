@@ -49,6 +49,16 @@ resource "newrelic_workflow" "email_notification_workflow" {
     }
   }
 
+  dynamic "enrichments" {
+    for_each = toset(var.enrichments)
+    nrql {
+      name = enrichments.key
+      configuration {
+        query = enrichments.value
+      }
+    }
+  }
+
   destination {
     channel_id            = newrelic_notification_channel.email_notification_channel.id
     notification_triggers = var.notification_triggers
