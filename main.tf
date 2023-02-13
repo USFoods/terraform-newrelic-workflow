@@ -51,7 +51,12 @@ resource "newrelic_workflow" "email_notification_workflow" {
 
   dynamic "enrichments" {
     for_each = toset(var.enrichments)
-    
+    nrql {
+      name = enrichments.key
+      configuration {
+        query = enrichments.value
+      }
+    }
   }
 
   destination {
