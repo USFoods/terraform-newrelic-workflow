@@ -49,11 +49,12 @@ resource "newrelic_workflow" "email_notification_workflow" {
     }
   }
 
-  dynamic "enrichments" {
-    for_each = var.enrichments
+  enrichments {
+    nrql {
+        for_each = var.enrichments
 
-    content {
-        nrql {
+        content {
+        
             name = enrichments.key
             configuration {
                 query = enrichments.value
