@@ -50,11 +50,12 @@ resource "newrelic_workflow" "email_notification_workflow" {
   }
 
   enrichments {
+    count = var.enrichments == {} ? 0 : 1
+
     dynamic "nrql" {
         for_each = var.enrichments
 
         content {
-        
             name = nrql.key
             configuration {
                 query = nrql.value
