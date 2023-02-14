@@ -50,7 +50,7 @@ resource "newrelic_workflow" "email_notification_workflow" {
   }
 
   enrichments {
-    nrql {
+    dynamic "nrql" {
         for_each = var.enrichments
 
         content {
