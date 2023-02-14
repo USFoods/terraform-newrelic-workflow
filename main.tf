@@ -55,9 +55,9 @@ resource "newrelic_workflow" "email_notification_workflow" {
 
         content {
         
-            name = enrichments.key
+            name = nrql.key
             configuration {
-                query = enrichments.value
+                query = nrql.value
             }
         }
     }
