@@ -3,35 +3,60 @@ variable "account_id" {
   type        = string
 }
 
-variable "parent_id" {
-  default     = ""
-  description = "Determines the New Relic account where workflows will be created"
+variable "type" {
+  default     = "EMAIL"
+  description = "The type of workflow destination"
   type        = string
 }
 
-variable "name" {
-  type = string
-}
-
 variable "enabled" {
-  type = bool
+  default     = false
+  description = "Whether workflow is enabled"
+  type        = bool
 }
 
-variable "email_addresses" {
-  description = "List of email adresses to receive alert notifications"
-  type        = list(string)
-}
-
-variable "email_properties" {
-  default     = []
-  description = "Nested block that describes additional email properties"
-  type        = list(map(string))
+variable "name" {
+  description = "The name of the workflow"
+  type        = string
 }
 
 variable "muting" {
   default     = "DONT_NOTIFY_FULLY_OR_PARTIALLY_MUTED_ISSUES"
   description = "How to handle muted issues"
   type        = string
+}
+
+variable "enrichments" {
+  default     = null
+  description = "The workflow's notification enrichments"
+  type        = map(string)
+}
+
+# Variables for email destination
+variable "email_destinations" {
+  type = list(object({
+    email_addresses = list(string)
+    email_subject   = optional(string, null)
+    email_details   = optional(string, null)
+  }))
+}
+
+variable "email_addresses" {
+  default     = null
+  description = "List of email adresses to receive alert notifications"
+  type        = list(string)
+}
+
+variable "email_subject" {
+  description = "Free text that represents the email subject title"
+  type        = string
+  default     = null
+}
+
+variable "email_details" {
+  description = "Free text that represents the email custom details"
+  type        = string
+  default     = null
 }
 
 variable "notification_triggers" {
@@ -41,12 +66,9 @@ variable "notification_triggers" {
 }
 
 variable "policy_ids" {
+  default     = []
   description = "List of policy ids to be include in the workflow issues filter"
   type        = list(string)
 }
 
-variable "enrichments" {
-    description = "The workflow's notification enrichments"
-    default = null
-    type = map(string)
-}
+

@@ -1,38 +1,16 @@
-resource "newrelic_notification_destination" "email_notification_destination" {
-  account_id = coalesce(var.parent_id, var.account_id)
-  name       = "${var.name} Destination"
-  type       = "EMAIL"
+module "email_destination" {
+  count = length(var.email_destinations)
 
-  property {
-    key   = "email"
-    value = join(",", var.email_addresses)
-  }
+  source = "./modules/email-destination"
+
+  account_id      = var.account_id
+  name            = var.name
+  email_addresses = var.email_destinations[count.index].email_addresses
+
 }
 
-resource "newrelic_notification_channel" "email_notification_channel" {
-  account_id     = coalesce(var.parent_id, var.account_id)
-  name           = var.name
-  type           = "EMAIL"
-  destination_id = newrelic_notification_destination.email_notification_destination.id
-  product        = "IINT"
-
-  // At least one property block is required, even if empty
-  property {
-    key   = ""
-    value = ""
-  }
-
-  dynamic "property" {
-    for_each = var.email_properties
-    content {
-      key   = property.key
-      value = property.value
-    }
-  }
-}
-
-resource "newrelic_workflow" "email_notification_workflow" {
-  account_id = coalesce(var.parent_id, var.account_id)
+resource "newrelic_workflow" "this" {
+  account_id = var.account_id
 
   name                  = var.name
   enabled               = var.enabled
@@ -53,21 +31,33 @@ resource "newrelic_workflow" "email_notification_workflow" {
     for_each = var.enrichments == null ? [] : [1]
 
     content {
-        dynamic "nrql" {
-            for_each = var.enrichments
+      dynamic "nrql" {
+        for_each = var.enrichments
 
-            content {
-                name = nrql.key
-                configuration {
-                    query = nrql.value
-                }
-            }
+        content {
+          name = nrql.key
+          configuration {
+            query = nrql.value
+          }
         }
+      }
     }
-}
+  }
 
-  destination {
-    channel_id            = newrelic_notification_channel.email_notification_channel.id
-    notification_triggers = var.notification_triggers
+  dynamic "destination" {
+    for_each = module.email_destination
+
+    content {
+      channel_id            = destination.value.channel_id
+      notification_triggers = var.notification_triggers
+    }
   }
 }
+
+#   destination {
+#     channel_id            = compact(
+#         [try(module.email_destination[0].channel_id, "")]
+#     )
+#     notification_triggers = var.notification_triggers
+#   }
+# }
