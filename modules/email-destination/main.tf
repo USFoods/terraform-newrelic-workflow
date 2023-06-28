@@ -8,6 +8,18 @@ terraform {
   }
 }
 
+locals {
+  # Merge properties into a map to support the dynamic property block
+  properties = merge(
+    {
+      "subject" = coalesce(var.email_subject, "{{ issueTitle }} - Issue {{issueId}}")
+    },
+    var.email_details != "" ? {
+      "customDetailsEmail" = var.email_details
+    } : {}
+  )
+}
+
 resource "newrelic_notification_destination" "this" {
   account_id = var.account_id
   name       = "${var.name} Email Destination"
@@ -26,21 +38,12 @@ resource "newrelic_notification_channel" "this" {
   destination_id = newrelic_notification_destination.this.id
   product        = "IINT"
 
-  property {
-    key   = "subject"
-    value = coalesce(var.email_subject, "{{ issueTitle }} - Issue {{issueId}}")
-  }
+  dynamic "property" {
+    for_each = local.properties
 
-  property {
-      key   = "customDetailsEmail"
-      value = var.email_details
+    content {
+      key   = property.key
+      value = property.value
+    }
   }
-
-  #   dynamic "property" {
-  #     for_each = var.email_properties
-  #     content {
-  #       key   = property.key
-  #       value = property.value
-  #     }
-  #   }
 }

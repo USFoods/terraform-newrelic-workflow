@@ -27,17 +27,42 @@ variable "muting" {
 }
 
 variable "enrichments" {
-  default     = null
+  default     = []
   description = "The workflow's notification enrichments"
-  type        = map(string)
+  type = list(object({
+    name  = string
+    query = string
+  }))
+
+  validation {
+    condition     = length(var.enrichments) <= 2
+    error_message = "The maximum number of enrichments per workflow is 2"
+  }
+}
+
+variable "issues_filter" {
+  default     = []
+  description = "Filters used to identify issues handled by this workflow."
+  type = list(object({
+    attribute = string
+    operator  = string
+    values    = list(any)
+  }))
+}
+
+# Provides a convenient shortcut for configuring issues filters based on policy ids
+variable "policy_ids" {
+  default     = []
+  description = "List of policy ids to be include in the workflow issues filter"
+  type        = list(string)
 }
 
 # Variables for email destination
 variable "email_destinations" {
   type = list(object({
     email_addresses = list(string)
-    email_subject   = optional(string, null)
-    email_details   = optional(string, null)
+    email_subject   = optional(string, "")
+    email_details   = optional(string, "")
   }))
 }
 
@@ -62,12 +87,6 @@ variable "email_details" {
 variable "notification_triggers" {
   default     = []
   description = "Issue events to notify on"
-  type        = list(string)
-}
-
-variable "policy_ids" {
-  default     = []
-  description = "List of policy ids to be include in the workflow issues filter"
   type        = list(string)
 }
 
