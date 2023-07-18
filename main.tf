@@ -13,7 +13,7 @@ locals {
     local.policies_filter
   )
 
-  single_destination = var.email_addresses != null ? [
+  single_email_destination = var.email_addresses != null ? [
     {
       email_addresses = var.email_addresses
       email_subject   = var.email_subject
@@ -23,20 +23,33 @@ locals {
 
   email_destinations = concat(
     var.email_destinations,
-    local.single_destination
+    local.single_email_destination
+  )
+
+  single_webhook_destination = var.webhook_url != null ? [
+    {
+      webookhook_url = var.webhook_url
+      webhook_headers = var.webhook_headers
+      webhook_payload = var.webhook_payload
+    }
+  ] : []
+
+  webhook_destinations = concat(
+    var.webhook_destinations,
+    local.single_webhook_destination
   )
 }
 
 module "email_destinations" {
-  count = length(var.email_destinations)
+  count = length(local.email_destinations)
 
   source = "./modules/email-destination"
 
   account_id      = var.account_id
   name            = var.name
-  email_addresses = var.email_destinations[count.index].email_addresses
-  email_subject   = var.email_destinations[count.index].email_subject
-  email_details   = var.email_destinations[count.index].email_details
+  email_addresses = local.email_destinations[count.index].email_addresses
+  email_subject   = local.email_destinations[count.index].email_subject
+  email_details   = local.email_destinations[count.index].email_details
 
 }
 

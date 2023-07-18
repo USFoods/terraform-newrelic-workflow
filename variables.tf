@@ -59,6 +59,8 @@ variable "policy_ids" {
 
 # Variables for email destination
 variable "email_destinations" {
+  default = []
+  description = "List of email destinations to receive alert notifications"
   type = list(object({
     email_addresses = list(string)
     email_subject   = optional(string, "")
@@ -82,6 +84,34 @@ variable "email_details" {
   description = "Free text that represents the email custom details"
   type        = string
   default     = null
+}
+
+variable "webhook_destinations" {
+    default = []
+    description = "List of webhook destinations to receive alert notifications"
+    type = list(object({
+        webhook_url = string
+        webook_headers = map(string)
+        webook_payload = map(string)
+    }))
+}
+
+variable "webhook_url" {
+    default = null
+    description = "Url of webhook to receive notification"
+    type = string
+}
+
+variable "webhook_headers" {
+    default = null
+    description = "A map of key/value pairs that represents the webhook headers"
+    type = map(string)
+}
+
+variable "webhook_payload" {
+    default = null
+    description = "A map of key/value pairs that represents the webhook payload"
+    type = map(string)
 }
 
 variable "notification_triggers" {

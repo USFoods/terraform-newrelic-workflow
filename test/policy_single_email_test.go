@@ -42,7 +42,7 @@ func TestPolicySingleEmailConfiguration(t *testing.T) {
 	expectedEmailDestinations := []map[string]string{
 		{
 			"email_addresses": "robert.example@fake.com",
-			"email_subject":   "",
+			"email_subject":   "{{ issueTitle }} - Issue {{issueId}}",
 			"email_details":   "",
 		},
 	}

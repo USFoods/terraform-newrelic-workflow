@@ -1,17 +1,17 @@
 output "workflow_id" {
-  value = module.main.id
+  value = module.main.workflow_id
 }
 
 output "workflow_name" {
-  value = module.main.name
+  value = module.main.workflow_name
 }
 
 output "workflow_enabled" {
-  value = module.main.enabled
+  value = module.main.workflow_enabled
 }
 
 output "workflow_muting" {
-  value = module.main.muting_rules_handling
+  value = module.main.workflow_muting
 }
 
 output "email_destinations" {

@@ -8,33 +8,21 @@ terraform {
   }
 }
 
-locals {
-  # Merge properties into a map to support the dynamic property block
-  properties = merge(
-    {
-      "subject" = coalesce(var.email_subject, "{{ issueTitle }} - Issue {{issueId}}")
-    },
-    var.email_details != null ? {
-      "customDetailsEmail" = var.email_details
-    } : {}
-  )
-}
-
 resource "newrelic_notification_destination" "this" {
   account_id = var.account_id
   name       = "${var.name} Email Destination"
-  type       = "EMAIL"
+  type       = "WEBHOOK"
 
   property {
-    key   = "email"
-    value = join(",", var.email_addresses)
+    key   = "url"
+    value = var.url
   }
 }
 
 resource "newrelic_notification_channel" "this" {
   account_id     = var.account_id
   name           = var.name
-  type           = "EMAIL"
+  type           = "WEBHOOK"
   destination_id = newrelic_notification_destination.this.id
   product        = "IINT"
 
