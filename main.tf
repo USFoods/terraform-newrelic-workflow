@@ -13,6 +13,8 @@ locals {
     local.policies_filter
   )
 
+  # Using seperate input variables for simple scenarios, but
+  # combine to create a single email destination
   single_email_destination = var.email_addresses != null ? [
     {
       email_addresses = var.email_addresses
@@ -26,9 +28,11 @@ locals {
     local.single_email_destination
   )
 
+  # Using seperate unput variables for simple scenarios, but
+  # combine to create a single webhook destination
   single_webhook_destination = var.webhook_url != null ? [
     {
-      webookhook_url = var.webhook_url
+      webhook_url  = var.webhook_url
       webhook_headers = var.webhook_headers
       webhook_payload = var.webhook_payload
     }
@@ -40,6 +44,7 @@ locals {
   )
 }
 
+# Create any email destinations that have been defined
 module "email_destinations" {
   count = length(local.email_destinations)
 
@@ -50,7 +55,20 @@ module "email_destinations" {
   email_addresses = local.email_destinations[count.index].email_addresses
   email_subject   = local.email_destinations[count.index].email_subject
   email_details   = local.email_destinations[count.index].email_details
+}
 
+# Create any webhook destinations that have been defined
+module "webhook_destinations" {
+  count = length(local.webhook_destinations)
+
+  source = "./modules/api-destination"
+
+  account_id = var.account_id
+  name       = var.name
+ 
+  webhook_url = local.webhook_destinations[count.index].webhook_url
+  webhook_headers = local.webhook_destinations[count.index].webhook_headers
+  webhook_payload = local.webhook_destinations[count.index].webhook_payload
 }
 
 resource "newrelic_workflow" "this" {
@@ -89,7 +107,7 @@ resource "newrelic_workflow" "this" {
   }
 
   dynamic "destination" {
-    for_each = module.email_destinations
+    for_each = concat(module.email_destinations, module.webhook_destinations)
 
     content {
       channel_id            = destination.value.channel_id

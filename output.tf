@@ -46,3 +46,7 @@ output "workflow_muting" {
 output "email_destinations" {
   value = module.email_destinations
 }
+
+output "webhook_destinations" {
+  value = module.webhook_destinations
+}

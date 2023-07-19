@@ -8,18 +8,18 @@ variable "name" {
   type        = string
 }
 
-variable "url" {
+variable "webhook_url" {
   description = "A list of email addresses"
   type        = string
 }
 
-variable "headers" {
+variable "webhook_headers" {
     description = "A map of key/value pairs that represents the webhook headers"
     type = map(string)
     default = null
 }
 
-variable "payload" {
+variable "webhook_payload" {
     description = "A map of key/value pairs that represents the webhook payload"
     type = map(string)
     default = null
