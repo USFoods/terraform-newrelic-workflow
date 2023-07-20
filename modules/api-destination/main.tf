@@ -10,21 +10,23 @@ terraform {
 
 locals {
   payload = <<-EOF
-	id: {{ json issueId }},
-	issueUrl: {{ json issuePageUrl }},
-	title: {{ json annotations.title.[0] }},
-	priority: {{ json priority }},
-	impactedEntities: {{json entitiesData.names}},
-	totalIncidents: {{json totalIncidents}},
-	state: {{ json state }},
-	trigger: {{ json triggerEvent }},
-	isCorrelated: {{ json isCorrelated }},
-	createdAt: {{ createdAt }},
-	updatedAt: {{ updatedAt }},
-	sources: {{ json accumulations.source }},
-	alertPolicyNames: {{ json accumulations.policyName }},
-	alertConditionNames: {{ json accumulations.conditionName }},
-	workflowName: {{ json workflowName }}"
+{
+  "id": {{ json issueId }},
+  "issueUrl": {{ json issuePageUrl }},
+  "title": {{ json annotations.title.[0] }},
+  "priority": {{ json priority }},
+  "impactedEntities": {{json entitiesData.names}},
+  "totalIncidents": {{json totalIncidents}},
+  "state": {{ json state }},
+  "trigger": {{ json triggerEvent }},
+  "isCorrelated": {{ json isCorrelated }},
+  "createdAt": {{ createdAt }},
+  "updatedAt": {{ updatedAt }},
+  "sources": {{ json accumulations.source }},
+  "alertPolicyNames": {{ json accumulations.policyName }},
+  "alertConditionNames": {{ json accumulations.conditionName }},
+  "workflowName": {{ json workflowName }}
+}
 EOF
 
   # Merge properties into a map to support the dynamic property block
@@ -58,7 +60,7 @@ resource "newrelic_notification_channel" "this" {
 
   # At least one property block is always required
   property {
-    key = ""
+    key   = ""
     value = ""
   }
 

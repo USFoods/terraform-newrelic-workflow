@@ -9,12 +9,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPolicySimpleWebhookConfiguration(t *testing.T) {
+func TestPolicyCustomWebhookConfiguration(t *testing.T) {
 	// Construct the terraform options with default retryable errors to handle the most common
 	// retryable errors in terraform testing.
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		// Set the path to the Terraform code that will be tested.
-		TerraformDir: "../examples/policy-webhook-basic",
+		TerraformDir: "../examples/policy-webhook-custom",
 		Vars: map[string]interface{}{
 			"account_id": os.Getenv("NEW_RELIC_ACCOUNT_ID"),
 			"enabled":    false,
@@ -41,24 +41,22 @@ func TestPolicySimpleWebhookConfiguration(t *testing.T) {
 
 	expectedWebhookDestinations := []map[string]string{
 		{
-			"webhook_url":     "https://api.monitoring.com",
-			"webhook_headers": "",
+			"webhook_url": "https://api.monitoring.com",
+			"webhook_headers": `{
+  "x-api-key": "secure_string_for_security"
+}
+`,
 			"webhook_payload": `{
   "id": {{ json issueId }},
   "issueUrl": {{ json issuePageUrl }},
   "title": {{ json annotations.title.[0] }},
   "priority": {{ json priority }},
-  "impactedEntities": {{json entitiesData.names}},
-  "totalIncidents": {{json totalIncidents}},
   "state": {{ json state }},
   "trigger": {{ json triggerEvent }},
-  "isCorrelated": {{ json isCorrelated }},
-  "createdAt": {{ createdAt }},
-  "updatedAt": {{ updatedAt }},
-  "sources": {{ json accumulations.source }},
   "alertPolicyNames": {{ json accumulations.policyName }},
   "alertConditionNames": {{ json accumulations.conditionName }},
-  "workflowName": {{ json workflowName }}
+  "workflowName": {{ json workflowName }},
+  "supportGroup": Site Reliability Engineering
 }
 `,
 		},
