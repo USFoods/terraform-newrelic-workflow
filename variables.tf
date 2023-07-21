@@ -113,5 +113,3 @@ variable "notification_triggers" {
   description = "Issue events to notify on"
   type        = list(string)
 }
-
-

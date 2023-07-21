@@ -32,7 +32,7 @@ locals {
   # combine to create a single webhook destination
   single_webhook_destination = var.webhook_url != null ? [
     {
-      webhook_url  = var.webhook_url
+      webhook_url     = var.webhook_url
       webhook_headers = var.webhook_headers
       webhook_payload = var.webhook_payload
     }
@@ -65,8 +65,8 @@ module "webhook_destinations" {
 
   account_id = var.account_id
   name       = var.name
- 
-  webhook_url = local.webhook_destinations[count.index].webhook_url
+
+  webhook_url     = local.webhook_destinations[count.index].webhook_url
   webhook_headers = local.webhook_destinations[count.index].webhook_headers
   webhook_payload = local.webhook_destinations[count.index].webhook_payload
 }

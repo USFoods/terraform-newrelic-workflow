@@ -11,4 +11,3 @@ for DIR in $DIRS; do
     bash -c "terraform -chdir=$DIR init"
   fi
 done
-

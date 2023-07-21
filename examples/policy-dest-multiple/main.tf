@@ -21,4 +21,3 @@ module "main" {
   email_addresses = ["robert.example@fake.com"]
   webhook_url     = "https://api.monitoring.com"
 }
-

@@ -59,4 +59,3 @@ exec:
 ready: fmt lint clean
 
 .PHONY : clean lint init deps exec fmt ready tools test
-
