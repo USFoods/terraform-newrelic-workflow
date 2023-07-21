@@ -9,14 +9,16 @@ resource "newrelic_alert_policy" "example" {
 }
 
 # This is the bare minimum configuration required for a workflow
-# with a webhook destination targetting a policy
+# with multiple email destinations targetting a policy
 module "main" {
   source = "../.."
 
   account_id = var.account_id
-  name       = "Example Workflow Webhook Destination"
+  name       = "Example Workflow Multiple Destinations"
   enabled    = var.enabled
   policy_ids = [newrelic_alert_policy.example.id]
 
-  webhook_url = "https://api.monitoring.com"
+  email_addresses = ["robert.example@fake.com"]
+  webhook_url     = "https://api.monitoring.com"
 }
+

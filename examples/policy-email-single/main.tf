@@ -15,9 +15,8 @@ module "main" {
 
   account_id = var.account_id
   name       = "Example Workflow Email Destination"
-  type       = "EMAIL"
   enabled    = var.enabled
   policy_ids = [newrelic_alert_policy.example.id]
 
-  email_addresses = [ "robert.example@fake.com" ]
+  email_addresses = ["robert.example@fake.com"]
 }

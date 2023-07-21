@@ -3,12 +3,6 @@ variable "account_id" {
   type        = string
 }
 
-variable "type" {
-  default     = "EMAIL"
-  description = "The type of workflow destination"
-  type        = string
-}
-
 variable "enabled" {
   default     = false
   description = "Whether workflow is enabled"

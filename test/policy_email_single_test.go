@@ -9,12 +9,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPolicyMultipleEmailConfiguration(t *testing.T) {
+func TestPolicySingleEmailConfiguration(t *testing.T) {
 	// Construct the terraform options with default retryable errors to handle the most common
 	// retryable errors in terraform testing.
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		// Set the path to the Terraform code that will be tested.
-		TerraformDir: "../examples/policy-multiple-email",
+		TerraformDir: "../examples/policy-email-single",
 		Vars: map[string]interface{}{
 			"account_id": os.Getenv("NEW_RELIC_ACCOUNT_ID"),
 			"enabled":    false,
@@ -42,12 +42,7 @@ func TestPolicyMultipleEmailConfiguration(t *testing.T) {
 	expectedEmailDestinations := []map[string]string{
 		{
 			"email_addresses": "robert.example@fake.com",
-			"email_subject":   "Example Email Subject One",
-			"email_details":   "",
-		},
-		{
-			"email_addresses": "jane.example@fake.com",
-			"email_subject":   "Example Email Subject Two",
+			"email_subject":   "{{ issueTitle }} - Issue {{issueId}}",
 			"email_details":   "",
 		},
 	}
