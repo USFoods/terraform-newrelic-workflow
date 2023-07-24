@@ -1,38 +1,78 @@
-resource "newrelic_notification_destination" "email_notification_destination" {
-  account_id = coalesce(var.parent_id, var.account_id)
-  name       = "${var.name} Destination"
-  type       = "EMAIL"
-
-  property {
-    key   = "email"
-    value = join(",", var.email_addresses)
-  }
-}
-
-resource "newrelic_notification_channel" "email_notification_channel" {
-  account_id     = coalesce(var.parent_id, var.account_id)
-  name           = var.name
-  type           = "EMAIL"
-  destination_id = newrelic_notification_destination.email_notification_destination.id
-  product        = "IINT"
-
-  // At least one property block is required, even if empty
-  property {
-    key   = ""
-    value = ""
-  }
-
-  dynamic "property" {
-    for_each = var.email_properties
-    content {
-      key   = property.key
-      value = property.value
+locals {
+  # If policy_ids is set, then we need to add a filter for it
+  policies_filter = try(length(var.policy_ids) > 0, false) ? [
+    {
+      attribute = "labels.policyIds"
+      operator  = "EXACTLY_MATCHES"
+      values    = var.policy_ids
     }
-  }
+  ] : []
+
+  issues_filter = concat(
+    var.issues_filter,
+    local.policies_filter
+  )
+
+  # Using seperate input variables for simple scenarios, but
+  # combine to create a single email destination
+  single_email_destination = var.email_addresses != null ? [
+    {
+      email_addresses = var.email_addresses
+      email_subject   = var.email_subject
+      email_details   = var.email_details
+    }
+  ] : []
+
+  email_destinations = concat(
+    var.email_destinations,
+    local.single_email_destination
+  )
+
+  # Using seperate unput variables for simple scenarios, but
+  # combine to create a single webhook destination
+  single_webhook_destination = var.webhook_url != null ? [
+    {
+      webhook_url     = var.webhook_url
+      webhook_headers = var.webhook_headers
+      webhook_payload = var.webhook_payload
+    }
+  ] : []
+
+  webhook_destinations = concat(
+    var.webhook_destinations,
+    local.single_webhook_destination
+  )
 }
 
-resource "newrelic_workflow" "email_notification_workflow" {
-  account_id = coalesce(var.parent_id, var.account_id)
+# Create any email destinations that have been defined
+module "email_destinations" {
+  count = length(local.email_destinations)
+
+  source = "./modules/email-destination"
+
+  account_id      = var.account_id
+  name            = var.name
+  email_addresses = local.email_destinations[count.index].email_addresses
+  email_subject   = local.email_destinations[count.index].email_subject
+  email_details   = local.email_destinations[count.index].email_details
+}
+
+# Create any webhook destinations that have been defined
+module "webhook_destinations" {
+  count = length(local.webhook_destinations)
+
+  source = "./modules/api-destination"
+
+  account_id = var.account_id
+  name       = var.name
+
+  webhook_url     = local.webhook_destinations[count.index].webhook_url
+  webhook_headers = local.webhook_destinations[count.index].webhook_headers
+  webhook_payload = local.webhook_destinations[count.index].webhook_payload
+}
+
+resource "newrelic_workflow" "this" {
+  account_id = var.account_id
 
   name                  = var.name
   enabled               = var.enabled
@@ -42,32 +82,36 @@ resource "newrelic_workflow" "email_notification_workflow" {
     name = var.name
     type = "FILTER"
 
-    predicate {
-      attribute = "labels.policyIds"
-      operator  = "EXACTLY_MATCHES"
-      values    = var.policy_ids
+    dynamic "predicate" {
+      for_each = local.issues_filter
+
+      content {
+        attribute = predicate.value.attribute
+        operator  = predicate.value.operator
+        values    = predicate.value.values
+      }
     }
   }
 
   dynamic "enrichments" {
-    for_each = var.enrichments == null ? [] : [1]
+    for_each = var.enrichments
 
     content {
-        dynamic "nrql" {
-            for_each = var.enrichments
-
-            content {
-                name = nrql.key
-                configuration {
-                    query = nrql.value
-                }
-            }
+      nrql {
+        name = enrichments.name
+        configuration {
+          query = enrichments.query
         }
+      }
     }
-}
+  }
 
-  destination {
-    channel_id            = newrelic_notification_channel.email_notification_channel.id
-    notification_triggers = var.notification_triggers
+  dynamic "destination" {
+    for_each = concat(module.email_destinations, module.webhook_destinations)
+
+    content {
+      channel_id            = destination.value.channel_id
+      notification_triggers = var.notification_triggers
+    }
   }
 }
