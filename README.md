@@ -93,10 +93,10 @@ Then perform the following commands on the root folder:
 
 | Name | Description |
 |------|-------------|
-| <a name="output_email_destinations"></a> [email\_destinations](#output\_email\_destinations) | n/a |
-| <a name="output_webhook_destinations"></a> [webhook\_destinations](#output\_webhook\_destinations) | n/a |
-| <a name="output_workflow_enabled"></a> [workflow\_enabled](#output\_workflow\_enabled) | n/a |
-| <a name="output_workflow_id"></a> [workflow\_id](#output\_workflow\_id) | n/a |
-| <a name="output_workflow_muting"></a> [workflow\_muting](#output\_workflow\_muting) | n/a |
-| <a name="output_workflow_name"></a> [workflow\_name](#output\_workflow\_name) | n/a |
+| <a name="output_email_destinations"></a> [email\_destinations](#output\_email\_destinations) | The list of email destinations defined for the workflow |
+| <a name="output_webhook_destinations"></a> [webhook\_destinations](#output\_webhook\_destinations) | The list of webhook destinations defined for the workflow |
+| <a name="output_workflow_enabled"></a> [workflow\_enabled](#output\_workflow\_enabled) | Whether the workflow is enabled |
+| <a name="output_workflow_id"></a> [workflow\_id](#output\_workflow\_id) | The Id of the workflow |
+| <a name="output_workflow_muting"></a> [workflow\_muting](#output\_workflow\_muting) | How the workflow handles muted issues |
+| <a name="output_workflow_name"></a> [workflow\_name](#output\_workflow\_name) | The name of the workflow |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
