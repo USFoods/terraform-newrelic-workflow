@@ -12,7 +12,7 @@ locals {
   # Merge properties into a map to support the dynamic property block
   properties = merge(
     {
-      "subject" = coalesce(var.email_subject, "{{ issueTitle }} - Issue {{issueId}}")
+      "subject" = coalesce(var.email_subject, "{{ issueTitle }}")
     },
     var.email_details != null ? {
       "customDetailsEmail" = var.email_details
