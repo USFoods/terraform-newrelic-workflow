@@ -23,7 +23,7 @@ GOTOOLS ?= $(shell cd $(TOOL_DIR) && go list -f '{{ .Imports }}' -tags tools |tr
 #############################
 clean:
 	@echo "=== $(PROJECT_NAME) === [ clean            ]: removing Terraform local states..."
-	@find . \( -name '.terraform*' -or -name '*tfstate*' \) -exec rm -rf {} +
+	@find . \( -name '.terraform*' -or -name '*tfstate*' -or -name 'tf.tfplan' \) -exec rm -rf {} +
 
 init: exec
 	@echo "=== $(PROJECT_NAME) === [ tf init          ]: initializing Terraform configuration..."
