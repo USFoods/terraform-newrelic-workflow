@@ -8,7 +8,7 @@ output "channel_id" {
 
 output "email_addresses" {
   # There should be only one property block, but we'll use try() just in case
-  value = try(one(newrelic_notification_destination.this.property)["value"], "")
+  value = try(one([for p in newrelic_notification_destination.this.property : p["value"] if p.key == "email"]), "")
 }
 
 output "email_subject" {

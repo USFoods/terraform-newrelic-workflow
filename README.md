@@ -82,7 +82,7 @@ Then perform the following commands on the root folder:
 | <a name="input_issues_filter"></a> [issues\_filter](#input\_issues\_filter) | Filters used to identify issues handled by this workflow. | <pre>list(object({<br>    attribute = string<br>    operator  = string<br>    values    = list(any)<br>  }))</pre> | `[]` | no |
 | <a name="input_muting"></a> [muting](#input\_muting) | How to handle muted issues | `string` | `"DONT_NOTIFY_FULLY_OR_PARTIALLY_MUTED_ISSUES"` | no |
 | <a name="input_name"></a> [name](#input\_name) | The name of the workflow | `string` | n/a | yes |
-| <a name="input_notification_triggers"></a> [notification\_triggers](#input\_notification\_triggers) | Issue events to notify on | `list(string)` | `[]` | no |
+| <a name="input_notification_triggers"></a> [notification\_triggers](#input\_notification\_triggers) | Issue events to notify on | `list(string)` | `null` | no |
 | <a name="input_policy_ids"></a> [policy\_ids](#input\_policy\_ids) | List of policy ids to be include in the workflow issues filter | `list(string)` | `[]` | no |
 | <a name="input_webhook_destinations"></a> [webhook\_destinations](#input\_webhook\_destinations) | List of webhook destinations to receive alert notifications | <pre>list(object({<br>    webhook_url    = string<br>    webook_headers = map(string)<br>    webook_payload = string<br>  }))</pre> | `[]` | no |
 | <a name="input_webhook_headers"></a> [webhook\_headers](#input\_webhook\_headers) | A map of key/value pairs that represents the webhook headers | `string` | `null` | no |

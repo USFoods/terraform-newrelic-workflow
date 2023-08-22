@@ -109,7 +109,7 @@ variable "webhook_payload" {
 }
 
 variable "notification_triggers" {
-  default     = []
+  default     = null
   description = "Issue events to notify on"
   type        = list(string)
 }
