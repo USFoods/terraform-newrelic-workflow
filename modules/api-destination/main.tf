@@ -41,6 +41,8 @@ EOF
 }
 
 resource "newrelic_notification_destination" "this" {
+  count = var.webhook_url != null ? 1 : 0
+
   account_id = var.account_id
   name       = "${var.name} Webhook Destination"
   type       = "WEBHOOK"
@@ -55,7 +57,7 @@ resource "newrelic_notification_channel" "this" {
   account_id     = var.account_id
   name           = var.name
   type           = "WEBHOOK"
-  destination_id = newrelic_notification_destination.this.id
+  destination_id = var.webhook_url != null ? newrelic_notification_destination.this[0].id : var.webhook_id
   product        = "IINT"
 
   # At least one property block is always required
