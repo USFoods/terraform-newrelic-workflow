@@ -84,7 +84,7 @@ Then perform the following commands on the root folder:
 | <a name="input_name"></a> [name](#input\_name) | The name of the workflow | `string` | n/a | yes |
 | <a name="input_notification_triggers"></a> [notification\_triggers](#input\_notification\_triggers) | Issue events to notify on | `list(string)` | `null` | no |
 | <a name="input_policy_ids"></a> [policy\_ids](#input\_policy\_ids) | List of policy ids to be include in the workflow issues filter | `list(string)` | `[]` | no |
-| <a name="input_webhook_destinations"></a> [webhook\_destinations](#input\_webhook\_destinations) | List of webhook destinations to receive alert notifications | <pre>list(object({<br>    webhook_id     = optional(string)<br>    webhook_url    = optional(string)<br>    webook_headers = map(string)<br>    webook_payload = string<br>  }))</pre> | `[]` | no |
+| <a name="input_webhook_destinations"></a> [webhook\_destinations](#input\_webhook\_destinations) | List of webhook destinations to receive alert notifications | <pre>list(object({<br>    webhook_id      = optional(string)<br>    webhook_url     = optional(string)<br>    webhook_headers = optional(string)<br>    webhook_payload = optional(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_webhook_headers"></a> [webhook\_headers](#input\_webhook\_headers) | A map of key/value pairs that represents the webhook headers | `string` | `null` | no |
 | <a name="input_webhook_id"></a> [webhook\_id](#input\_webhook\_id) | Id of the webhook to receive notification | `string` | `null` | no |
 | <a name="input_webhook_payload"></a> [webhook\_payload](#input\_webhook\_payload) | A map of key/value pairs that represents the webhook payload | `string` | `null` | no |
@@ -95,7 +95,7 @@ Then perform the following commands on the root folder:
 | Name | Description |
 |------|-------------|
 | <a name="output_email_destinations"></a> [email\_destinations](#output\_email\_destinations) | The list of email destinations defined for the workflow |
-| <a name="output_webhook_destinations"></a> [webhook\_destinations](#output\_webhook\_destinations) | The list of webhook destinations defined for the workflow |
+| <a name="output_webhook_destinations"></a> [webhook\_destinations](#output\_webhook\_destinations) | The webhook destination defined for the workflow |
 | <a name="output_workflow_enabled"></a> [workflow\_enabled](#output\_workflow\_enabled) | Whether the workflow is enabled |
 | <a name="output_workflow_id"></a> [workflow\_id](#output\_workflow\_id) | The Id of the workflow |
 | <a name="output_workflow_muting"></a> [workflow\_muting](#output\_workflow\_muting) | How the workflow handles muted issues |

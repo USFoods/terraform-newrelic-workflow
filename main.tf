@@ -30,7 +30,7 @@ locals {
 
   # Using seperate unput variables for simple scenarios, but
   # combine to create a single webhook destination
-  single_webhook_destination = (var.webhook_url != null || var.webhook_id != null) ? [
+  single_webhook_destination = var.webhook_url != null || var.webhook_id != null ? [
     {
       webhook_id      = var.webhook_id
       webhook_url     = var.webhook_url

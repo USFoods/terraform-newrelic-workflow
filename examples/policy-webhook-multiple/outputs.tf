@@ -15,9 +15,5 @@ output "workflow_muting" {
 }
 
 output "webhook_destinations" {
-  value = module.main.webhook_destinations[0]
-}
-
-output "existing_destination_id" {
-  value = newrelic_notification_destination.example_destination.id
+  value = module.main.webhook_destinations
 }

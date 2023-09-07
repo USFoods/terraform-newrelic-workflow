@@ -1,6 +1,6 @@
-# Policy Webhook Basic
+# Policy Webhook Custom
 
-Configuration in this directory creates a workflow targetting an alert policy by id with a single pre-exisitng webhook destination.
+Configuration in this directory creates a workflow targetting an alert policy by id with a single webhook destination configured with custom values.
 
 ## Usage
 
@@ -39,8 +39,6 @@ Note that this example may create resources which can cost money. Run `terraform
 | Name | Type |
 |------|------|
 | [newrelic_alert_policy.example](https://registry.terraform.io/providers/newrelic/newrelic/latest/docs/resources/alert_policy) | resource |
-| [newrelic_notification_destination.example_destination](https://registry.terraform.io/providers/newrelic/newrelic/latest/docs/resources/notification_destination) | resource |
-| [newrelic_notification_destination.example_destination](https://registry.terraform.io/providers/newrelic/newrelic/latest/docs/data-sources/notification_destination) | data source |
 
 ## Inputs
 
@@ -53,7 +51,6 @@ Note that this example may create resources which can cost money. Run `terraform
 
 | Name | Description |
 |------|-------------|
-| <a name="output_existing_destination_id"></a> [existing\_destination\_id](#output\_existing\_destination\_id) | n/a |
 | <a name="output_webhook_destinations"></a> [webhook\_destinations](#output\_webhook\_destinations) | n/a |
 | <a name="output_workflow_enabled"></a> [workflow\_enabled](#output\_workflow\_enabled) | n/a |
 | <a name="output_workflow_id"></a> [workflow\_id](#output\_workflow\_id) | n/a |

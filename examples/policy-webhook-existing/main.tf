@@ -20,12 +20,17 @@ resource "newrelic_notification_destination" "example_destination" {
 }
 
 data "newrelic_notification_destination" "example_destination" {
-  name = newrelic_notification_destination.example_destination.name
+  depends_on = [newrelic_notification_destination.example_destination]
+  name       = newrelic_notification_destination.example_destination.name
 }
 
 # This is the bare minimum configuration required for a workflow
 # with a webhook destination targetting a policy
 module "main" {
+  depends_on = [
+    newrelic_notification_destination.example_destination,
+    data.newrelic_notification_destination.example_destination
+  ]
   source = "../.."
 
   account_id = var.account_id
@@ -34,5 +39,4 @@ module "main" {
   policy_ids = [newrelic_alert_policy.example.id]
 
   webhook_id = data.newrelic_notification_destination.example_destination.id
-  #webhook_url = "https://api.newrelic.com"
 }
