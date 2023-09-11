@@ -27,10 +27,6 @@ data "newrelic_notification_destination" "example_destination" {
 # This is the bare minimum configuration required for a workflow
 # with a webhook destination targetting a policy
 module "main" {
-  depends_on = [
-    newrelic_notification_destination.example_destination,
-    data.newrelic_notification_destination.example_destination
-  ]
   source = "../.."
 
   account_id = var.account_id

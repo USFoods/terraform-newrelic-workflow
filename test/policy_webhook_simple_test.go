@@ -32,11 +32,11 @@ func TestPolicySimpleWebhookConfiguration(t *testing.T) {
 	workflowEnabled := terraform.Output(t, terraformOptions, "workflow_enabled")
 	workflowMuting := terraform.Output(t, terraformOptions, "workflow_muting")
 
-	//Assert workflow name matches expected
+	// Assert workflow name matches expected
 	assert.Equal(t, "Example Workflow Webhook Destination", workflowName)
-	//Assert workflow enabled matches expected
+	// Assert workflow enabled matches expected
 	assert.Equal(t, "false", workflowEnabled)
-	//Assert workflow muting matches expected
+	// Assert workflow muting matches expected
 	assert.Equal(t, "DONT_NOTIFY_FULLY_OR_PARTIALLY_MUTED_ISSUES", workflowMuting)
 
 	expectedWebhookDestinations := []map[string]string{
@@ -59,8 +59,7 @@ func TestPolicySimpleWebhookConfiguration(t *testing.T) {
   "alertPolicyNames": {{ json accumulations.policyName }},
   "alertConditionNames": {{ json accumulations.conditionName }},
   "workflowName": {{ json workflowName }}
-}
-`,
+}`,
 		},
 	}
 
@@ -69,7 +68,6 @@ func TestPolicySimpleWebhookConfiguration(t *testing.T) {
 
 	var webhookDestinations []map[string]string
 	err := json.Unmarshal([]byte(webhookDestinationsOutput), &webhookDestinations)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -79,5 +77,4 @@ func TestPolicySimpleWebhookConfiguration(t *testing.T) {
 		assert.Equal(t, x["webhook_headers"], webhookDestinations[i]["webhook_headers"])
 		assert.Equal(t, x["webhook_payload"], webhookDestinations[i]["webhook_payload"])
 	}
-
 }

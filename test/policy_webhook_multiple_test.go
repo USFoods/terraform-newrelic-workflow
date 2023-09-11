@@ -9,12 +9,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPolicyCustomWebhookConfiguration(t *testing.T) {
+func TestPolicyWebhookMultipleConfiguration(t *testing.T) {
 	// Construct the terraform options with default retryable errors to handle the most common
 	// retryable errors in terraform testing.
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		// Set the path to the Terraform code that will be tested.
-		TerraformDir: "../examples/policy-webhook-custom",
+		TerraformDir: "../examples/policy-webhook-multiple",
 		Vars: map[string]interface{}{
 			"account_id": os.Getenv("NEW_RELIC_ACCOUNT_ID"),
 			"enabled":    false,
@@ -32,33 +32,46 @@ func TestPolicyCustomWebhookConfiguration(t *testing.T) {
 	workflowEnabled := terraform.Output(t, terraformOptions, "workflow_enabled")
 	workflowMuting := terraform.Output(t, terraformOptions, "workflow_muting")
 
-	//Assert workflow name matches expected
+	// Assert workflow name matches expected
 	assert.Equal(t, "Example Workflow Webhook Destination", workflowName)
-	//Assert workflow enabled matches expected
+	// Assert workflow enabled matches expected
 	assert.Equal(t, "false", workflowEnabled)
-	//Assert workflow muting matches expected
+	// Assert workflow muting matches expected
 	assert.Equal(t, "DONT_NOTIFY_FULLY_OR_PARTIALLY_MUTED_ISSUES", workflowMuting)
 
-	expectedWebhookDestinations := []map[string]string{
-		{
-			"webhook_url": "https://api.monitoring.com",
-			"webhook_headers": `{
-  "x-api-key": "secure_string_for_security"
-}
-`,
-			"webhook_payload": `{
+	expectedPayload := `{
   "id": {{ json issueId }},
   "issueUrl": {{ json issuePageUrl }},
   "title": {{ json annotations.title.[0] }},
   "priority": {{ json priority }},
+  "impactedEntities": {{json entitiesData.names}},
+  "totalIncidents": {{json totalIncidents}},
   "state": {{ json state }},
   "trigger": {{ json triggerEvent }},
+  "isCorrelated": {{ json isCorrelated }},
+  "createdAt": {{ createdAt }},
+  "updatedAt": {{ updatedAt }},
+  "sources": {{ json accumulations.source }},
   "alertPolicyNames": {{ json accumulations.policyName }},
   "alertConditionNames": {{ json accumulations.conditionName }},
-  "workflowName": {{ json workflowName }},
-  "supportGroup": Site Reliability Engineering
+  "workflowName": {{ json workflowName }}
 }
-`,
+`
+
+	expectedHeader := `{
+  "x-api-key": "secure_string_for_security"
+}
+`
+
+	expectedWebhookDestinations := []map[string]string{
+		{
+			"webhook_url":     "https://api.monitoring.com",
+			"webhook_headers": expectedHeader,
+			"webhook_payload": expectedPayload,
+		},
+		{
+			"webhook_url":     "https://api.internal.com",
+			"webhook_payload": expectedPayload,
 		},
 	}
 
@@ -67,7 +80,6 @@ func TestPolicyCustomWebhookConfiguration(t *testing.T) {
 
 	var webhookDestinations []map[string]string
 	err := json.Unmarshal([]byte(webhookDestinationsOutput), &webhookDestinations)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -77,5 +89,4 @@ func TestPolicyCustomWebhookConfiguration(t *testing.T) {
 		assert.Equal(t, x["webhook_headers"], webhookDestinations[i]["webhook_headers"])
 		assert.Equal(t, x["webhook_payload"], webhookDestinations[i]["webhook_payload"])
 	}
-
 }

@@ -32,18 +32,18 @@ func TestPolicyMultipleDestinationsConfiguration(t *testing.T) {
 	workflowEnabled := terraform.Output(t, terraformOptions, "workflow_enabled")
 	workflowMuting := terraform.Output(t, terraformOptions, "workflow_muting")
 
-	//Assert workflow name matches expected
+	// Assert workflow name matches expected
 	assert.Equal(t, "Example Workflow Multiple Destinations", workflowName)
-	//Assert workflow enabled matches expected
+	// Assert workflow enabled matches expected
 	assert.Equal(t, "false", workflowEnabled)
-	//Assert workflow muting matches expected
+	// Assert workflow muting matches expected
 	assert.Equal(t, "DONT_NOTIFY_FULLY_OR_PARTIALLY_MUTED_ISSUES", workflowMuting)
 
 	expectedEmailDestinations := []map[string]string{
 		{
 			"email_addresses": "robert.example@fake.com",
-			"email_subject":   "{{ issueTitle }}",
-			"email_details":   "",
+			"email_subject":   "Alert Notification for {{ issueTitle }}",
+			"email_details":   "View Details at {{ issueUrl }}",
 		},
 	}
 
@@ -52,7 +52,6 @@ func TestPolicyMultipleDestinationsConfiguration(t *testing.T) {
 
 	var emailDestinations []map[string]string
 	err := json.Unmarshal([]byte(emailDestinationsOutput), &emailDestinations)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -63,28 +62,30 @@ func TestPolicyMultipleDestinationsConfiguration(t *testing.T) {
 		assert.Equal(t, x["email_details"], emailDestinations[i]["email_details"])
 	}
 
-	expectedWebhookDestinations := []map[string]string{
-		{
-			"webhook_url":     "https://api.monitoring.com",
-			"webhook_headers": "",
-			"webhook_payload": `{
+	expectedWebhookHeaders := `{
+  "x-api-key": "secure_string_for_security"
+}
+`
+
+	expectedWebhookPayload := `{
   "id": {{ json issueId }},
   "issueUrl": {{ json issuePageUrl }},
   "title": {{ json annotations.title.[0] }},
   "priority": {{ json priority }},
-  "impactedEntities": {{json entitiesData.names}},
-  "totalIncidents": {{json totalIncidents}},
   "state": {{ json state }},
   "trigger": {{ json triggerEvent }},
-  "isCorrelated": {{ json isCorrelated }},
-  "createdAt": {{ createdAt }},
-  "updatedAt": {{ updatedAt }},
-  "sources": {{ json accumulations.source }},
   "alertPolicyNames": {{ json accumulations.policyName }},
   "alertConditionNames": {{ json accumulations.conditionName }},
-  "workflowName": {{ json workflowName }}
+  "workflowName": {{ json workflowName }},
+  "supportGroup": Site Reliability Engineering
 }
-`,
+`
+
+	expectedWebhookDestinations := []map[string]string{
+		{
+			"webhook_url":     "https://api.monitoring.com",
+			"webhook_headers": expectedWebhookHeaders,
+			"webhook_payload": expectedWebhookPayload,
 		},
 	}
 
