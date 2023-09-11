@@ -59,7 +59,8 @@ func TestPolicySimpleWebhookConfiguration(t *testing.T) {
   "alertPolicyNames": {{ json accumulations.policyName }},
   "alertConditionNames": {{ json accumulations.conditionName }},
   "workflowName": {{ json workflowName }}
-}`,
+}
+`,
 		},
 	}
 
