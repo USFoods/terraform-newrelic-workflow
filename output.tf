@@ -25,5 +25,5 @@ output "email_destinations" {
 
 output "webhook_destinations" {
   value       = module.webhook_destinations
-  description = "The list of webhook destinations defined for the workflow"
+  description = "The webhook destination defined for the workflow"
 }

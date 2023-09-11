@@ -84,10 +84,21 @@ variable "webhook_destinations" {
   default     = []
   description = "List of webhook destinations to receive alert notifications"
   type = list(object({
-    webhook_url    = string
-    webook_headers = map(string)
-    webook_payload = string
+    webhook_id      = optional(string)
+    webhook_url     = optional(string)
+    webhook_headers = optional(string)
+    webhook_payload = optional(string)
   }))
+  validation {
+    condition     = alltrue([for d in var.webhook_destinations : d.webhook_id != null || d.webhook_url != null])
+    error_message = "All webhook destinations must have either a webhook id or webhook url"
+  }
+}
+
+variable "webhook_id" {
+  default     = null
+  description = "Id of the webhook to receive notification"
+  type        = string
 }
 
 variable "webhook_url" {

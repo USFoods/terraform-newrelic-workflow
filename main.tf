@@ -30,8 +30,9 @@ locals {
 
   # Using seperate unput variables for simple scenarios, but
   # combine to create a single webhook destination
-  single_webhook_destination = var.webhook_url != null ? [
+  single_webhook_destination = var.webhook_url != null || var.webhook_id != null ? [
     {
+      webhook_id      = var.webhook_id
       webhook_url     = var.webhook_url
       webhook_headers = var.webhook_headers
       webhook_payload = var.webhook_payload
@@ -66,6 +67,7 @@ module "webhook_destinations" {
   account_id = var.account_id
   name       = var.name
 
+  webhook_id      = local.webhook_destinations[count.index].webhook_id
   webhook_url     = local.webhook_destinations[count.index].webhook_url
   webhook_headers = local.webhook_destinations[count.index].webhook_headers
   webhook_payload = local.webhook_destinations[count.index].webhook_payload

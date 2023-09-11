@@ -8,9 +8,16 @@ variable "name" {
   type        = string
 }
 
+variable "webhook_id" {
+  description = "The id of an existing webhook destination"
+  type        = string
+  default     = null
+}
+
 variable "webhook_url" {
   description = "A list of email addresses"
   type        = string
+  default     = null
 }
 
 variable "webhook_headers" {
